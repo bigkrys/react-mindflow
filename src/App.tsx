@@ -1,11 +1,11 @@
 import './App.css'
-import MindMap from './components/MindMap'
+import MindMapContainer from './components/MindMapContainer'
 
 function App() {
   return (
     <div className="App">
       <h1>React 思维导图 Demo</h1>
-      <MindMap />
+      <MindMapContainer />
     </div>
   )
 }
