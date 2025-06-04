@@ -1,54 +1,98 @@
-# React + TypeScript + Vite
+# React MindFlow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一个基于 React 和 D3.js 的思维导图组件。
 
-Currently, two official plugins are available:
+## 特性
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 使用 TypeScript 开发
+- 基于 D3.js 的树形布局
+- 支持自定义样式和交互
+- 支持节点点击事件
+- 完全类型安全
 
-## Expanding the ESLint configuration
+## 安装
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install react-mindflow
+# 或
+yarn add react-mindflow
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 使用方法
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```tsx
+import { MindMap } from 'react-mindflow';
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+const data = {
+  name: "前端知识图谱",
+  children: [
+    {
+      name: "初阶",
+      children: [
+        { name: "HTML" },
+        { name: "CSS" },
+        { name: "JavaScript" }
+      ]
+    }
+  ]
+};
+
+function App() {
+  return (
+    <MindMap
+      data={data}
+      width={800}
+      height={600}
+      nodeRadius={20}
+      fontSize={14}
+      colors={{
+        node: '#fff',
+        link: '#ccc',
+        text: '#333'
+      }}
+      onNodeClick={(node) => console.log('clicked:', node)}
+    />
+  );
+}
 ```
+
+## API
+
+### MindMapProps
+
+| 属性 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| data | MindMapNode | - | 思维导图数据 |
+| width | number | 800 | SVG 宽度 |
+| height | number | 600 | SVG 高度 |
+| nodeRadius | number | 20 | 节点半径 |
+| nodePadding | number | 24 | 节点文本间距 |
+| fontSize | number | 14 | 文本大小 |
+| colors | object | - | 颜色配置 |
+| onNodeClick | function | - | 节点点击回调 |
+
+### MindMapNode
+
+```ts
+interface MindMapNode {
+  name: string;
+  children?: MindMapNode[];
+}
+```
+
+## 开发
+
+```bash
+# 安装依赖
+npm install
+
+# 开发模式
+npm run dev
+
+# 构建
+npm run build
+```
+
+## License
+
+MIT 
