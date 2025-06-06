@@ -16,7 +16,6 @@
   "keywords": [
     "react",
     "mindmap",
-    "d3",
     "typescript"
   ],
   "author": "",
@@ -26,10 +25,10 @@
     "react-dom": ">=16.8.0"
   },
   "dependencies": {
-    "d3": "^7.8.5"
+    "@ant-design/icons": "^6.0.0",
+    "@antv/g6": "^5.0.48"
   },
   "devDependencies": {
-    "@types/d3": "^7.4.3",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.5.1",

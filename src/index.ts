@@ -1,2 +1,2 @@
-export { MindMap } from './components/MindMap';
-export type { MindMapNode, MindMapProps } from './types'; 
+export { default as MindFlow } from './components/MindFlow';
+export type { MindFlowProps, MindFlowNode, MindFlowEdge } from './types'; 

@@ -1,0 +1,60 @@
+{
+    "id": "root",
+    "label": "MindFlow Demo",
+    "children": [
+      {
+        "id": "tech",
+        "label": "技术栈",
+        "children": [
+          {
+            "id": "frontend",
+            "label": "前端",
+            "children": [
+              {
+                "id": "react",
+                "label": "React"
+              },
+              {
+                "id": "typescript",
+                "label": "TypeScript"
+              }
+            ]
+          },
+          {
+            "id": "backend",
+            "label": "后端",
+            "children": [
+              {
+                "id": "nodejs",
+                "label": "Node.js"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "design",
+        "label": "设计",
+        "children": [
+          {
+            "id": "ui",
+            "label": "UI设计"
+          },
+          {
+            "id": "ux",
+            "label": "用户体验"
+          }
+        ]
+      },
+      {
+        "id": "product",
+        "label": "产品",
+        "children": [
+          {
+            "id": "planning",
+            "label": "产品规划"
+          }
+        ]
+      }
+    ]
+  } 

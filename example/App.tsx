@@ -1,69 +1,90 @@
-import React from 'react';
-import { MindMap } from '../src';
-import data from '../src/data/fe.json';
+import React, { useState, useEffect } from 'react';
+import { MindFlow } from '../src';
+import type { MindFlowNode } from '../src/types';
 
-console.log(data);
+const customLineColors = [
+  '#02CB9F', 
+  '#F6D87B', 
+  '#95de64', 
+  '#CB6EF8',
+  '#0056D2',
+  '#D2B48C',
+];
 
 const App: React.FC = () => {
-  const handleNodeClick = (node: any) => {
-    console.log('点击节点:', node);
+  const [data, setData] = useState<MindFlowNode | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [size, setSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    fetch('/data.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(jsonData => {
+        if (!jsonData || typeof jsonData !== 'object') {
+          throw new Error('Invalid data format');
+        }
+        setData(jsonData);
+      })
+      .catch(error => {
+        console.error('加载数据失败:', error);
+        setError(error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  const handleNodeClick = (node: MindFlowNode) => {
+    console.log('Node clicked:', node);
   };
+
+  if (loading) {
+    return <div>加载中...</div>;
+  }
+
+  if (error) {
+    return <div>错误: {error}</div>;
+  }
+
+  if (!data) {
+    return <div>没有数据</div>;
+  }
 
   return (
     <div style={{ 
-      background: '#061178', 
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center'
+      width: '100%', 
+      height: '100vh', 
+      overflow: 'hidden',
+      position: 'relative'
     }}>
-      <div style={{ 
-        background: 'transparent', 
-        padding: 40,
-        width: '100%',
-        overflow: 'hidden'
-      }}>
-        <MindMap
-          data={data}
-          width={1600}
-          height={900}
-          initialDepth={2}
-          theme={{
-            node: {
-              fontSize: 16,
-              borderRadius: 24,
-              backgroundColor: '#fff',
-              color: '#333'
-            },
-            connection: {
-              lineColor: '#40a9ff',
-              lineWidth: 3,
-              lineOpacity: 1,
-              lineStyle: 'curved',
-              lineType: 'solid',
-              curveStrength: 25,
-              animation: true,
-              animationDuration: 500
-            },
-            expandButton: {
-              backgroundColor: '#fff',
-              borderColor: '#1890ff',
-              iconColor: '#1890ff'
-            },
-            rootNode: {
-              backgroundColor: '#1890ff',
-              borderColor: '#1890ff',
-              color: '#fff',
-              borderWidth: 0
-            }
-          }}
-          style={{
-            background: '#061178',
-          }}
-          onNodeClick={handleNodeClick}
-          showExpandButtons={false}
-        />
-      </div>
+      <MindFlow
+        data={data}
+        theme="light"
+        direction="H"
+        expandDepth={1}
+        defaultLineColors={customLineColors}
+        onNodeClick={handleNodeClick}
+        width={size.width}
+        height={size.height}
+      />
     </div>
   );
 };

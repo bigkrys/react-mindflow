@@ -1,14 +1,15 @@
 # React MindFlow
 
-一个基于 React 和 D3.js 的思维导图组件。
+基于 React 和 AntV G6 的思维导图组件。
 
 ## 特性
 
-- 使用 TypeScript 开发
-- 基于 D3.js 的树形布局
-- 支持自定义样式和交互
-- 支持节点点击事件
-- 完全类型安全
+- 🎨 支持自定义节点样式
+- 🌓 支持亮色/暗色主题
+- 📐 支持水平/垂直布局
+- 🖱️ 支持节点拖拽
+- 🔍 支持画布缩放
+- 📦 支持 TypeScript
 
 ## 安装
 
@@ -16,41 +17,43 @@
 npm install react-mindflow
 # 或
 yarn add react-mindflow
+# 或
+pnpm add react-mindflow
 ```
 
-## 使用方法
+## 使用
 
 ```tsx
-import { MindMap } from 'react-mindflow';
+import { MindFlow } from 'react-mindflow';
 
 const data = {
-  name: "前端知识图谱",
+  id: 'root',
+  label: '思维导图',
   children: [
     {
-      name: "初阶",
+      id: '1',
+      label: '子节点1',
       children: [
-        { name: "HTML" },
-        { name: "CSS" },
-        { name: "JavaScript" }
-      ]
-    }
-  ]
+        { id: '1-1', label: '子节点1.1' },
+        { id: '1-2', label: '子节点1.2' },
+      ],
+    },
+    {
+      id: '2',
+      label: '子节点2',
+    },
+  ],
 };
 
 function App() {
   return (
-    <MindMap
+    <MindFlow
       data={data}
       width={800}
       height={600}
-      nodeRadius={20}
-      fontSize={14}
-      colors={{
-        node: '#fff',
-        link: '#ccc',
-        text: '#333'
-      }}
-      onNodeClick={(node) => console.log('clicked:', node)}
+      theme="light"
+      direction="H"
+      onNodeClick={(node) => console.log('点击节点:', node)}
     />
   );
 }
@@ -58,25 +61,35 @@ function App() {
 
 ## API
 
-### MindMapProps
+### MindFlow Props
 
-| 属性 | 类型 | 默认值 | 描述 |
-|------|------|--------|------|
-| data | MindMapNode | - | 思维导图数据 |
-| width | number | 800 | SVG 宽度 |
-| height | number | 600 | SVG 高度 |
-| nodeRadius | number | 20 | 节点半径 |
-| nodePadding | number | 24 | 节点文本间距 |
-| fontSize | number | 14 | 文本大小 |
-| colors | object | - | 颜色配置 |
-| onNodeClick | function | - | 节点点击回调 |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| data | 思维导图数据 | `MindFlowNode` | - |
+| width | 画布宽度 | `number` | 800 |
+| height | 画布高度 | `number` | 600 |
+| direction | 布局方向 | `'H'` \| `'V'` | 'H' |
+| theme | 主题 | `'light'` \| `'dark'` | 'light' |
+| nodePadding | 节点内边距 | `number` | 16 |
+| nodeSpacing | 同级节点间距 | `number` | 50 |
+| levelSpacing | 层级间距 | `number` | 100 |
+| onNodeClick | 节点点击事件 | `(node: MindFlowNode) => void` | - |
+| onNodeDoubleClick | 节点双击事件 | `(node: MindFlowNode) => void` | - |
+| onNodeContextMenu | 节点右键菜单事件 | `(node: MindFlowNode, e: MouseEvent) => void` | - |
 
-### MindMapNode
+### MindFlowNode
 
 ```ts
-interface MindMapNode {
-  name: string;
-  children?: MindMapNode[];
+interface MindFlowNode {
+  id: string;
+  label: string;
+  children?: MindFlowNode[];
+  style?: {
+    fill?: string;
+    stroke?: string;
+    lineWidth?: number;
+    [key: string]: any;
+  };
 }
 ```
 
@@ -84,13 +97,16 @@ interface MindMapNode {
 
 ```bash
 # 安装依赖
-npm install
+pnpm install
 
-# 开发模式
-npm run dev
+# 启动开发服务器
+pnpm dev
 
-# 构建
-npm run build
+# 构建库文件
+pnpm build
+
+# 构建示例
+pnpm build:example
 ```
 
 ## License
