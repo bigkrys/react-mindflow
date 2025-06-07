@@ -1,0 +1,82 @@
+name: Deploy Documentation Site
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+# 设置 GITHUB_TOKEN 的权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 允许一个并发部署
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  # 构建工作
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build documentation site
+        run: |
+          echo "Building with GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
+          # 清理构建目录
+          rm -rf example/dist
+          # 构建示例站点
+          GITHUB_REPOSITORY=${{ github.repository }} npm run build:example
+          # 修复资源路径（Linux 环境下的 sed 命令）
+          cd example/dist
+          sed -i "s|src=\"/|src=\"/react-mindflow/|g" index.html
+          cd ../..
+          # 检查构建输出
+          echo "Build output contents:"
+          ls -la example/dist/
+          echo "Build output directory structure:"
+          find example/dist/ -type f
+
+      - name: Verify index.html
+        run: |
+          echo "Checking index.html content:"
+          cat example/dist/index.html
+          echo "Checking asset paths in index.html:"
+          grep -r "src=" example/dist/index.html
+          grep -r "href=" example/dist/index.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'example/dist'
+
+  # 部署工作
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 
